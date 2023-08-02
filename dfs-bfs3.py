@@ -27,20 +27,23 @@ begin	target	words	return
 target인 "cog"는 words 안에 없기 때문에 변환할 수 없습니다.
 """
 
+# bfs
 from collections import deque
 
 def solution(begin, target, words):
     answer = 0
-    q = deque([begin])
+    q = deque()
+    q.append([begin, 0])
     visited = [0] * len(words)
 
     if target not in words:
         return answer
 
     while q:
-        value = q.popleft()
+        value, count = q.popleft()
 
         if value == target:
+            answer = count
             break
 
         for i in range(len(words)):
@@ -51,9 +54,38 @@ def solution(begin, target, words):
                         temp += 1
 
                 if temp == 1:
-                    answer += 1
-                    q.append(words[i])
+                    q.append([words[i], count+1])
                     visited[i] = 1
-                    break
 
     return answer
+
+# dfs
+def solution2(begin, target, words):
+    visited = [0] * len(words)
+    result = []
+
+    if target not in words:
+        return 0
+
+    def dfs(value, depth):
+        if value == target:
+            result.append(depth)
+            return
+
+        for i in range(len(words)):
+            if visited[i] == 1:
+                continue
+
+            temp = 0
+            for j in range(len(value)):
+                if value[j] != words[i][j]:
+                    temp += 1
+
+            if temp == 1:
+                visited[i] = 1
+                dfs(words[i], depth + 1)
+                visited[i] = 0
+
+    dfs(begin, 0)
+
+    return min(result)
