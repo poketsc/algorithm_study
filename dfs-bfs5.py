@@ -28,6 +28,7 @@ tickets	return
 
 from collections import defaultdict
 
+# stack
 def solution(tickets):
     routes = defaultdict(list)
 
@@ -48,3 +49,27 @@ def solution(tickets):
             path.append(stack.pop())
 
     return path[::-1]
+
+# dfs -> 재귀
+def solution2(tickets):
+    visited = [0] * len(tickets)
+    answer = []
+
+    def dfs(airport, path):
+
+        if len(path) == len(tickets) + 1:
+            answer.append(path)
+            return
+
+        for index, value in enumerate(tickets):
+            if value[0] == airport and visited[index] == 0:
+                visited[index] = 1
+                dfs(value[1], path + [value[1]])
+                visited[index] = 0
+
+    dfs("ICN", ["ICN"])
+
+    answer.sort()
+
+    return answer[0]
+
